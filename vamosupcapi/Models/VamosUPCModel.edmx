@@ -1,0 +1,568 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="vamosupcModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="bus">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar(max)" Nullable="false" />
+          <Property Name="abbreviation" Type="varchar(max)" Nullable="false" />
+          <Property Name="active" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="busByUser">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="busId" Type="int" Nullable="false" />
+          <Property Name="userId" Type="int" Nullable="false" />
+          <Property Name="active" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="busStop">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar(max)" Nullable="false" />
+          <Property Name="description" Type="varchar(max)" />
+          <Property Name="lat" Type="varchar(max)" Nullable="false" />
+          <Property Name="lng" Type="varchar(max)" Nullable="false" />
+          <Property Name="active" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="busStopByRoute">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="routeId" Type="int" Nullable="false" />
+          <Property Name="busStopId" Type="int" Nullable="false" />
+          <Property Name="active" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="route">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar(max)" Nullable="false" />
+          <Property Name="active" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="routeByBus">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="routeId" Type="int" Nullable="false" />
+          <Property Name="busId" Type="int" Nullable="false" />
+          <Property Name="active" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="user">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar(max)" Nullable="false" />
+          <Property Name="dni" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="password" Type="varchar(max)" Nullable="false" />
+          <Property Name="userTypeId" Type="int" Nullable="false" />
+          <Property Name="currentLat" Type="varchar(max)" />
+          <Property Name="currentLng" Type="varchar(max)" />
+          <Property Name="active" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="userType">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="description" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="active" Type="bit" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_busByUser_bus">
+          <End Role="bus" Type="Self.bus" Multiplicity="1" />
+          <End Role="busByUser" Type="Self.busByUser" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bus">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="busByUser">
+              <PropertyRef Name="busId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_busByUser_user">
+          <End Role="user" Type="Self.user" Multiplicity="1" />
+          <End Role="busByUser" Type="Self.busByUser" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="busByUser">
+              <PropertyRef Name="userId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_busStopByRoute_busStop">
+          <End Role="busStop" Type="Self.busStop" Multiplicity="1" />
+          <End Role="busStopByRoute" Type="Self.busStopByRoute" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="busStop">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="busStopByRoute">
+              <PropertyRef Name="busStopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_busStopByRoute_route">
+          <End Role="route" Type="Self.route" Multiplicity="1" />
+          <End Role="busStopByRoute" Type="Self.busStopByRoute" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="route">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="busStopByRoute">
+              <PropertyRef Name="routeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_routeByBus_bus">
+          <End Role="bus" Type="Self.bus" Multiplicity="1" />
+          <End Role="routeByBus" Type="Self.routeByBus" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bus">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="routeByBus">
+              <PropertyRef Name="busId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_routeByBus_route">
+          <End Role="route" Type="Self.route" Multiplicity="1" />
+          <End Role="routeByBus" Type="Self.routeByBus" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="route">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="routeByBus">
+              <PropertyRef Name="routeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_user_userType">
+          <End Role="userType" Type="Self.userType" Multiplicity="1" />
+          <End Role="user" Type="Self.user" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="userType">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="user">
+              <PropertyRef Name="userTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="vamosupcModelStoreContainer">
+          <EntitySet Name="bus" EntityType="Self.bus" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="busByUser" EntityType="Self.busByUser" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="busStop" EntityType="Self.busStop" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="busStopByRoute" EntityType="Self.busStopByRoute" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="route" EntityType="Self.route" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="routeByBus" EntityType="Self.routeByBus" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="user" EntityType="Self.user" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="userType" EntityType="Self.userType" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_busByUser_bus" Association="Self.FK_busByUser_bus">
+            <End Role="bus" EntitySet="bus" />
+            <End Role="busByUser" EntitySet="busByUser" />
+          </AssociationSet>
+          <AssociationSet Name="FK_busByUser_user" Association="Self.FK_busByUser_user">
+            <End Role="user" EntitySet="user" />
+            <End Role="busByUser" EntitySet="busByUser" />
+          </AssociationSet>
+          <AssociationSet Name="FK_busStopByRoute_busStop" Association="Self.FK_busStopByRoute_busStop">
+            <End Role="busStop" EntitySet="busStop" />
+            <End Role="busStopByRoute" EntitySet="busStopByRoute" />
+          </AssociationSet>
+          <AssociationSet Name="FK_busStopByRoute_route" Association="Self.FK_busStopByRoute_route">
+            <End Role="route" EntitySet="route" />
+            <End Role="busStopByRoute" EntitySet="busStopByRoute" />
+          </AssociationSet>
+          <AssociationSet Name="FK_routeByBus_bus" Association="Self.FK_routeByBus_bus">
+            <End Role="bus" EntitySet="bus" />
+            <End Role="routeByBus" EntitySet="routeByBus" />
+          </AssociationSet>
+          <AssociationSet Name="FK_routeByBus_route" Association="Self.FK_routeByBus_route">
+            <End Role="route" EntitySet="route" />
+            <End Role="routeByBus" EntitySet="routeByBus" />
+          </AssociationSet>
+          <AssociationSet Name="FK_user_userType" Association="Self.FK_user_userType">
+            <End Role="userType" EntitySet="userType" />
+            <End Role="user" EntitySet="user" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="vamosupcModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="vamosupcEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="buses" EntityType="vamosupcModel.bus" />
+          <EntitySet Name="busByUsers" EntityType="vamosupcModel.busByUser" />
+          <EntitySet Name="busStops" EntityType="vamosupcModel.busStop" />
+          <EntitySet Name="busStopByRoutes" EntityType="vamosupcModel.busStopByRoute" />
+          <EntitySet Name="routes" EntityType="vamosupcModel.route" />
+          <EntitySet Name="routeByBus" EntityType="vamosupcModel.routeByBu" />
+          <EntitySet Name="sysdiagrams" EntityType="vamosupcModel.sysdiagram" />
+          <EntitySet Name="users" EntityType="vamosupcModel.user" />
+          <EntitySet Name="userTypes" EntityType="vamosupcModel.userType" />
+          <AssociationSet Name="FK_busByUser_bus" Association="vamosupcModel.FK_busByUser_bus">
+            <End Role="bus" EntitySet="buses" />
+            <End Role="busByUser" EntitySet="busByUsers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_routeByBus_bus" Association="vamosupcModel.FK_routeByBus_bus">
+            <End Role="bus" EntitySet="buses" />
+            <End Role="routeByBu" EntitySet="routeByBus" />
+          </AssociationSet>
+          <AssociationSet Name="FK_busByUser_user" Association="vamosupcModel.FK_busByUser_user">
+            <End Role="user" EntitySet="users" />
+            <End Role="busByUser" EntitySet="busByUsers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_busStopByRoute_busStop" Association="vamosupcModel.FK_busStopByRoute_busStop">
+            <End Role="busStop" EntitySet="busStops" />
+            <End Role="busStopByRoute" EntitySet="busStopByRoutes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_busStopByRoute_route" Association="vamosupcModel.FK_busStopByRoute_route">
+            <End Role="route" EntitySet="routes" />
+            <End Role="busStopByRoute" EntitySet="busStopByRoutes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_routeByBus_route" Association="vamosupcModel.FK_routeByBus_route">
+            <End Role="route" EntitySet="routes" />
+            <End Role="routeByBu" EntitySet="routeByBus" />
+          </AssociationSet>
+          <AssociationSet Name="FK_user_userType" Association="vamosupcModel.FK_user_userType">
+            <End Role="userType" EntitySet="userTypes" />
+            <End Role="user" EntitySet="users" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="bus">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="abbreviation" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="active" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="busByUsers" Relationship="vamosupcModel.FK_busByUser_bus" FromRole="bus" ToRole="busByUser" />
+          <NavigationProperty Name="routeByBus" Relationship="vamosupcModel.FK_routeByBus_bus" FromRole="bus" ToRole="routeByBu" />
+        </EntityType>
+        <EntityType Name="busByUser">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="busId" Type="Int32" Nullable="false" />
+          <Property Name="userId" Type="Int32" Nullable="false" />
+          <Property Name="active" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="bus" Relationship="vamosupcModel.FK_busByUser_bus" FromRole="busByUser" ToRole="bus" />
+          <NavigationProperty Name="user" Relationship="vamosupcModel.FK_busByUser_user" FromRole="busByUser" ToRole="user" />
+        </EntityType>
+        <EntityType Name="busStop">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="lat" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="lng" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="active" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="busStopByRoutes" Relationship="vamosupcModel.FK_busStopByRoute_busStop" FromRole="busStop" ToRole="busStopByRoute" />
+        </EntityType>
+        <EntityType Name="busStopByRoute">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="routeId" Type="Int32" Nullable="false" />
+          <Property Name="busStopId" Type="Int32" Nullable="false" />
+          <Property Name="active" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="busStop" Relationship="vamosupcModel.FK_busStopByRoute_busStop" FromRole="busStopByRoute" ToRole="busStop" />
+          <NavigationProperty Name="route" Relationship="vamosupcModel.FK_busStopByRoute_route" FromRole="busStopByRoute" ToRole="route" />
+        </EntityType>
+        <EntityType Name="route">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="active" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="busStopByRoutes" Relationship="vamosupcModel.FK_busStopByRoute_route" FromRole="route" ToRole="busStopByRoute" />
+          <NavigationProperty Name="routeByBus" Relationship="vamosupcModel.FK_routeByBus_route" FromRole="route" ToRole="routeByBu" />
+        </EntityType>
+        <EntityType Name="routeByBu">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="routeId" Type="Int32" Nullable="false" />
+          <Property Name="busId" Type="Int32" Nullable="false" />
+          <Property Name="active" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="bus" Relationship="vamosupcModel.FK_routeByBus_bus" FromRole="routeByBu" ToRole="bus" />
+          <NavigationProperty Name="route" Relationship="vamosupcModel.FK_routeByBus_route" FromRole="routeByBu" ToRole="route" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="user">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="dni" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="password" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="userTypeId" Type="Int32" Nullable="false" />
+          <Property Name="currentLat" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="currentLng" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="active" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="busByUsers" Relationship="vamosupcModel.FK_busByUser_user" FromRole="user" ToRole="busByUser" />
+          <NavigationProperty Name="userType" Relationship="vamosupcModel.FK_user_userType" FromRole="user" ToRole="userType" />
+        </EntityType>
+        <EntityType Name="userType">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="description" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="active" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="users" Relationship="vamosupcModel.FK_user_userType" FromRole="userType" ToRole="user" />
+        </EntityType>
+        <Association Name="FK_busByUser_bus">
+          <End Type="vamosupcModel.bus" Role="bus" Multiplicity="1" />
+          <End Type="vamosupcModel.busByUser" Role="busByUser" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bus">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="busByUser">
+              <PropertyRef Name="busId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_routeByBus_bus">
+          <End Type="vamosupcModel.bus" Role="bus" Multiplicity="1" />
+          <End Type="vamosupcModel.routeByBu" Role="routeByBu" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bus">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="routeByBu">
+              <PropertyRef Name="busId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_busByUser_user">
+          <End Type="vamosupcModel.user" Role="user" Multiplicity="1" />
+          <End Type="vamosupcModel.busByUser" Role="busByUser" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="busByUser">
+              <PropertyRef Name="userId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_busStopByRoute_busStop">
+          <End Type="vamosupcModel.busStop" Role="busStop" Multiplicity="1" />
+          <End Type="vamosupcModel.busStopByRoute" Role="busStopByRoute" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="busStop">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="busStopByRoute">
+              <PropertyRef Name="busStopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_busStopByRoute_route">
+          <End Type="vamosupcModel.route" Role="route" Multiplicity="1" />
+          <End Type="vamosupcModel.busStopByRoute" Role="busStopByRoute" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="route">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="busStopByRoute">
+              <PropertyRef Name="routeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_routeByBus_route">
+          <End Type="vamosupcModel.route" Role="route" Multiplicity="1" />
+          <End Type="vamosupcModel.routeByBu" Role="routeByBu" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="route">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="routeByBu">
+              <PropertyRef Name="routeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_user_userType">
+          <End Type="vamosupcModel.userType" Role="userType" Multiplicity="1" />
+          <End Type="vamosupcModel.user" Role="user" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="userType">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="user">
+              <PropertyRef Name="userTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="vamosupcModelStoreContainer" CdmEntityContainer="vamosupcEntities">
+          <EntitySetMapping Name="buses">
+            <EntityTypeMapping TypeName="vamosupcModel.bus">
+              <MappingFragment StoreEntitySet="bus">
+                <ScalarProperty Name="active" ColumnName="active" />
+                <ScalarProperty Name="abbreviation" ColumnName="abbreviation" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="busByUsers">
+            <EntityTypeMapping TypeName="vamosupcModel.busByUser">
+              <MappingFragment StoreEntitySet="busByUser">
+                <ScalarProperty Name="active" ColumnName="active" />
+                <ScalarProperty Name="userId" ColumnName="userId" />
+                <ScalarProperty Name="busId" ColumnName="busId" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="busStops">
+            <EntityTypeMapping TypeName="vamosupcModel.busStop">
+              <MappingFragment StoreEntitySet="busStop">
+                <ScalarProperty Name="active" ColumnName="active" />
+                <ScalarProperty Name="lng" ColumnName="lng" />
+                <ScalarProperty Name="lat" ColumnName="lat" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="busStopByRoutes">
+            <EntityTypeMapping TypeName="vamosupcModel.busStopByRoute">
+              <MappingFragment StoreEntitySet="busStopByRoute">
+                <ScalarProperty Name="active" ColumnName="active" />
+                <ScalarProperty Name="busStopId" ColumnName="busStopId" />
+                <ScalarProperty Name="routeId" ColumnName="routeId" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="routes">
+            <EntityTypeMapping TypeName="vamosupcModel.route">
+              <MappingFragment StoreEntitySet="route">
+                <ScalarProperty Name="active" ColumnName="active" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="routeByBus">
+            <EntityTypeMapping TypeName="vamosupcModel.routeByBu">
+              <MappingFragment StoreEntitySet="routeByBus">
+                <ScalarProperty Name="active" ColumnName="active" />
+                <ScalarProperty Name="busId" ColumnName="busId" />
+                <ScalarProperty Name="routeId" ColumnName="routeId" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="vamosupcModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="definition" ColumnName="definition" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="users">
+            <EntityTypeMapping TypeName="vamosupcModel.user">
+              <MappingFragment StoreEntitySet="user">
+                <ScalarProperty Name="active" ColumnName="active" />
+                <ScalarProperty Name="currentLng" ColumnName="currentLng" />
+                <ScalarProperty Name="currentLat" ColumnName="currentLat" />
+                <ScalarProperty Name="userTypeId" ColumnName="userTypeId" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="dni" ColumnName="dni" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="userTypes">
+            <EntityTypeMapping TypeName="vamosupcModel.userType">
+              <MappingFragment StoreEntitySet="userType">
+                <ScalarProperty Name="active" ColumnName="active" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
